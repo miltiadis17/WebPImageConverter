@@ -1,0 +1,124 @@
+-------------------------------------------------------------------------------
+Test set: com.webpconverter.ImageConverterServiceTest
+-------------------------------------------------------------------------------
+Tests run: 12, Failures: 8, Errors: 1, Skipped: 0, Time elapsed: 0.889 s <<< FAILURE! -- in com.webpconverter.ImageConverterServiceTest
+com.webpconverter.ImageConverterServiceTest.shouldConvertSingleImageToWebP -- Time elapsed: 0.711 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldConvertSingleImageToWebP(ImageConverterServiceTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldIgnoreNonImageFiles -- Time elapsed: 0.006 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldIgnoreNonImageFiles(ImageConverterServiceTest.java:149)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldConvertImagesRecursively -- Time elapsed: 0.020 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 3
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldConvertImagesRecursively(ImageConverterServiceTest.java:98)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldPreserveImageDimensions -- Time elapsed: 0.006 s <<< ERROR!
+javax.imageio.IIOException: Can't read input file!
+	at java.desktop/javax.imageio.ImageIO.read(ImageIO.java:1308)
+	at com.webpconverter.ImageConverterServiceTest.shouldPreserveImageDimensions(ImageConverterServiceTest.java:248)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldNotProcessSubfoldersWhenRecursiveIsFalse -- Time elapsed: 0.005 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldNotProcessSubfoldersWhenRecursiveIsFalse(ImageConverterServiceTest.java:123)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldHandleQualityBoundaries -- Time elapsed: 0.003 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldHandleQualityBoundaries(ImageConverterServiceTest.java:221)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldReportProgressCorrectly -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 3
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldReportProgressCorrectly(ImageConverterServiceTest.java:172)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldHandleSpecialCharactersInFilenames -- Time elapsed: 0.030 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 2
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldHandleSpecialCharactersInFilenames(ImageConverterServiceTest.java:267)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.ImageConverterServiceTest.shouldConvertMultipleImagesWithDifferentFormats -- Time elapsed: 0.027 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 3
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.ImageConverterServiceTest.shouldConvertMultipleImagesWithDifferentFormats(ImageConverterServiceTest.java:68)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

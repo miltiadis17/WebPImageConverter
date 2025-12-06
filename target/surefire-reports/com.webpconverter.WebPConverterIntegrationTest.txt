@@ -1,0 +1,108 @@
+-------------------------------------------------------------------------------
+Test set: com.webpconverter.WebPConverterIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 7, Errors: 1, Skipped: 0, Time elapsed: 0.173 s <<< FAILURE! -- in com.webpconverter.WebPConverterIntegrationTest
+com.webpconverter.WebPConverterIntegrationTest.shouldHandleAllSupportedFormats -- Time elapsed: 0.019 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 5
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.WebPConverterIntegrationTest.shouldHandleAllSupportedFormats(WebPConverterIntegrationTest.java:236)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.WebPConverterIntegrationTest.shouldHandleVeryLargeImage -- Time elapsed: 0.068 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 1
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.WebPConverterIntegrationTest.shouldHandleVeryLargeImage(WebPConverterIntegrationTest.java:264)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.WebPConverterIntegrationTest.shouldConvertDifferentQualityLevels -- Time elapsed: 0.013 s <<< FAILURE!
+java.lang.AssertionError: 
+[Quality 20.0 should be smaller than quality 50.0] 
+Expecting actual:
+  0L
+to be less than:
+  0L 
+	at com.webpconverter.WebPConverterIntegrationTest.shouldConvertDifferentQualityLevels(WebPConverterIntegrationTest.java:157)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.WebPConverterIntegrationTest.shouldHandleLargeNumberOfFiles -- Time elapsed: 0.039 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 50
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.WebPConverterIntegrationTest.shouldHandleLargeNumberOfFiles(WebPConverterIntegrationTest.java:124)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.WebPConverterIntegrationTest.shouldHandleEmptySubdirectories -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 2
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.WebPConverterIntegrationTest.shouldHandleEmptySubdirectories(WebPConverterIntegrationTest.java:188)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.WebPConverterIntegrationTest.shouldPreserveImageQualityAndColors -- Time elapsed: 0.003 s <<< ERROR!
+javax.imageio.IIOException: Can't read input file!
+	at java.desktop/javax.imageio.ImageIO.read(ImageIO.java:1308)
+	at com.webpconverter.WebPConverterIntegrationTest.shouldPreserveImageQualityAndColors(WebPConverterIntegrationTest.java:205)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.WebPConverterIntegrationTest.shouldConvertCompleteProjectStructure -- Time elapsed: 0.019 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 4
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.WebPConverterIntegrationTest.shouldConvertCompleteProjectStructure(WebPConverterIntegrationTest.java:62)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.webpconverter.WebPConverterIntegrationTest.shouldHandleMixedContentDirectory -- Time elapsed: 0.004 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+expected: 2
+ but was: 0
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at com.webpconverter.WebPConverterIntegrationTest.shouldHandleMixedContentDirectory(WebPConverterIntegrationTest.java:99)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

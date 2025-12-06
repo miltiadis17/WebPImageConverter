@@ -10,6 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -17,6 +19,9 @@ public class ImageConverterServiceV2 {
 
     private static final String[] SUPPORTED_FORMATS = {"jpg", "jpeg", "png", "bmp", "gif"};
     private static final String OUTPUT_SUFFIX = "Webp";
+
+    private ExecutorService executorService;
+    private volatile boolean cancelled = false;
 
     public static class ConversionResult {
         private final int totalFiles;
@@ -37,8 +42,43 @@ public class ImageConverterServiceV2 {
         public List<String> getErrors() { return errors; }
     }
 
+    public static class ProgressInfo {
+        private final double progress;
+        private final String currentFile;
+        private final int processedCount;
+        private final int totalFiles;
+        private final long estimatedTimeRemaining; // в миллисекундах
+
+        public ProgressInfo(double progress, String currentFile, int processedCount, int totalFiles, long estimatedTimeRemaining) {
+            this.progress = progress;
+            this.currentFile = currentFile;
+            this.processedCount = processedCount;
+            this.totalFiles = totalFiles;
+            this.estimatedTimeRemaining = estimatedTimeRemaining;
+        }
+
+        public double getProgress() { return progress; }
+        public String getCurrentFile() { return currentFile; }
+        public int getProcessedCount() { return processedCount; }
+        public int getTotalFiles() { return totalFiles; }
+        public long getEstimatedTimeRemaining() { return estimatedTimeRemaining; }
+    }
+
+    /**
+     * Конвертирует изображения с простым коллбэком прогресса
+     */
     public ConversionResult convertImages(String inputPath, boolean recursive, float quality,
                                           Consumer<Double> progressCallback) throws IOException {
+        // Оборачиваем простой коллбэк в расширенный для обратной совместимости
+        return convertImagesWithProgress(inputPath, recursive, quality,
+            progressCallback == null ? null : progressInfo -> progressCallback.accept(progressInfo.getProgress()));
+    }
+
+    /**
+     * Конвертирует изображения с расширенным коллбэком прогресса (файл, ETA и т.д.)
+     */
+    public ConversionResult convertImagesWithProgress(String inputPath, boolean recursive, float quality,
+                                                      Consumer<ProgressInfo> progressCallback) throws IOException {
         File inputDir = new File(inputPath);
         if (!inputDir.exists() || !inputDir.isDirectory()) {
             throw new IOException("Указанная папка не существует или не является директорией");
@@ -51,34 +91,141 @@ public class ImageConverterServiceV2 {
 
         String outputPath = createOutputDirectory(inputPath);
 
-        int successCount = 0;
-        int failedCount = 0;
-        List<String> errors = new ArrayList<>();
+        // Сбрасываем флаг отмены перед началом
+        cancelled = false;
 
-        for (int i = 0; i < imageFiles.size(); i++) {
-            File imageFile = imageFiles.get(i);
-            try {
-                String relativePath = getRelativePath(inputDir, imageFile);
-                convertToWebP(imageFile, outputPath, relativePath, quality);
-                successCount++;
-            } catch (Exception e) {
-                failedCount++;
-                String errorMsg = imageFile.getName() + ": " + e.getMessage();
-                if (e.getCause() != null) {
-                    errorMsg += " (Причина: " + e.getCause().getMessage() + ")";
+        // Определяем количество потоков (CPU cores)
+        int threadCount = Runtime.getRuntime().availableProcessors();
+        executorService = Executors.newFixedThreadPool(threadCount);
+
+        // Атомарные счетчики для потокобезопасности
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger failedCount = new AtomicInteger(0);
+        AtomicInteger processedCount = new AtomicInteger(0);
+        List<String> errors = new CopyOnWriteArrayList<>();
+
+        // Время начала конвертации для расчета ETA
+        long startTime = System.currentTimeMillis();
+
+        List<Future<?>> futures = new ArrayList<>();
+
+        try {
+            // Отправляем задачи в пул потоков
+            for (File imageFile : imageFiles) {
+                // Проверяем флаг отмены перед добавлением новых задач
+                if (cancelled) {
+                    break;
                 }
-                errors.add(errorMsg);
-                System.err.println("Ошибка конвертации " + imageFile.getAbsolutePath() + ": " + e.getMessage());
-                e.printStackTrace();
+
+                Future<?> future = executorService.submit(() -> {
+                    // Проверяем флаг отмены в начале задачи
+                    if (cancelled) {
+                        int processed = processedCount.incrementAndGet();
+                        if (progressCallback != null) {
+                            long eta = calculateETA(startTime, processed, imageFiles.size());
+                            ProgressInfo progressInfo = new ProgressInfo(
+                                processed / (double) imageFiles.size(),
+                                "",
+                                processed,
+                                imageFiles.size(),
+                                eta
+                            );
+                            progressCallback.accept(progressInfo);
+                        }
+                        return;
+                    }
+
+                    try {
+                        String relativePath = getRelativePath(inputDir, imageFile);
+                        convertToWebP(imageFile, outputPath, relativePath, quality);
+                        successCount.incrementAndGet();
+                    } catch (Exception e) {
+                        failedCount.incrementAndGet();
+                        String errorMsg = imageFile.getName() + ": " + e.getMessage();
+                        if (e.getCause() != null) {
+                            errorMsg += " (Причина: " + e.getCause().getMessage() + ")";
+                        }
+                        errors.add(errorMsg);
+                        System.err.println("Ошибка конвертации " + imageFile.getAbsolutePath() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    } finally {
+                        // Обновляем прогресс после каждого файла
+                        int processed = processedCount.incrementAndGet();
+                        if (progressCallback != null) {
+                            long eta = calculateETA(startTime, processed, imageFiles.size());
+                            ProgressInfo progressInfo = new ProgressInfo(
+                                processed / (double) imageFiles.size(),
+                                imageFile.getName(),
+                                processed,
+                                imageFiles.size(),
+                                eta
+                            );
+                            progressCallback.accept(progressInfo);
+                        }
+                    }
+                });
+                futures.add(future);
             }
 
-            if (progressCallback != null) {
-                double progress = (i + 1) / (double) imageFiles.size();
-                progressCallback.accept(progress);
+            // Ожидаем завершения всех задач
+            for (Future<?> future : futures) {
+                try {
+                    future.get(); // Блокируемся до завершения задачи
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("Конвертация была прервана", e);
+                } catch (ExecutionException e) {
+                    // Ошибки уже обработаны внутри задач
+                    System.err.println("Ошибка выполнения задачи: " + e.getMessage());
+                }
+            }
+
+        } finally {
+            // Корректно завершаем ExecutorService
+            executorService.shutdown();
+            try {
+                if (!executorService.awaitTermination(60, TimeUnit.SECONDS)) {
+                    executorService.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executorService.shutdownNow();
+                Thread.currentThread().interrupt();
             }
         }
 
-        return new ConversionResult(imageFiles.size(), successCount, failedCount, errors);
+        return new ConversionResult(imageFiles.size(), successCount.get(), failedCount.get(), new ArrayList<>(errors));
+    }
+
+    /**
+     * Отменяет текущую конвертацию
+     */
+    public void cancel() {
+        cancelled = true;
+        if (executorService != null) {
+            executorService.shutdownNow();
+        }
+    }
+
+    /**
+     * Проверяет, была ли конвертация отменена
+     */
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    /**
+     * Рассчитывает расчетное время до завершения (ETA) в миллисекундах
+     */
+    private long calculateETA(long startTime, int processedFiles, int totalFiles) {
+        if (processedFiles == 0) {
+            return 0;
+        }
+
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        double averageTimePerFile = (double) elapsedTime / processedFiles;
+        int remainingFiles = totalFiles - processedFiles;
+
+        return (long) (averageTimePerFile * remainingFiles);
     }
 
     private List<File> findImageFiles(File directory, boolean recursive) throws IOException {

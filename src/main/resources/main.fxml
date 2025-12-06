@@ -59,14 +59,18 @@
         </VBox>
     </VBox>
 
-    <!-- Convert Button -->
-    <Button fx:id="convertButton" text="Конвертировать" onAction="#handleConvert"
-            style="-fx-font-size: 16px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"
-            prefWidth="200" prefHeight="45" disable="true">
+    <!-- Convert and Cancel Buttons -->
+    <HBox spacing="15" alignment="CENTER">
         <VBox.margin>
             <Insets top="10"/>
         </VBox.margin>
-    </Button>
+        <Button fx:id="convertButton" text="Конвертировать" onAction="#handleConvert"
+                style="-fx-font-size: 16px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="200" prefHeight="45" disable="true"/>
+        <Button fx:id="cancelButton" text="Отменить" onAction="#handleCancel"
+                style="-fx-font-size: 16px; -fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;"
+                prefWidth="150" prefHeight="45" disable="true" visible="false" managed="false"/>
+    </HBox>
 
     <!-- Progress Bar -->
     <VBox spacing="8" fx:id="progressBox" visible="false" managed="false">

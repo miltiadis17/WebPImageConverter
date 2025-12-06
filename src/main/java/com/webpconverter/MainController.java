@@ -21,6 +21,9 @@ public class MainController {
     private Button convertButton;
 
     @FXML
+    private Button cancelButton;
+
+    @FXML
     private CheckBox recursiveCheckBox;
 
     @FXML
@@ -42,6 +45,7 @@ public class MainController {
     private Label statusLabel;
 
     private final ImageConverterServiceV2 converterService = new ImageConverterServiceV2();
+    private Task<ImageConverterServiceV2.ConversionResult> currentTask;
 
     @FXML
     public void initialize() {
@@ -89,22 +93,38 @@ public class MainController {
 
         convertButton.setDisable(true);
         browseButton.setDisable(true);
+        cancelButton.setDisable(false);
+        cancelButton.setVisible(true);
+        cancelButton.setManaged(true);
 
-        Task<ImageConverterServiceV2.ConversionResult> conversionTask = new Task<>() {
+        currentTask = new Task<>() {
             @Override
             protected ImageConverterServiceV2.ConversionResult call() throws Exception {
-                return converterService.convertImages(inputPath, recursive, quality, progress -> {
+                return converterService.convertImagesWithProgress(inputPath, recursive, quality, progressInfo -> {
                     Platform.runLater(() -> {
-                        progressBar.setProgress(progress);
-                        int percentage = (int) (progress * 100);
-                        progressLabel.setText(String.format("Обработано: %d%%", percentage));
+                        progressBar.setProgress(progressInfo.getProgress());
+
+                        // Форматируем ETA
+                        String etaString = formatETA(progressInfo.getEstimatedTimeRemaining());
+
+                        // Форматируем текст прогресса
+                        String progressText = String.format(
+                            "Обработано: %d/%d (%d%%) • %s • ETA: %s",
+                            progressInfo.getProcessedCount(),
+                            progressInfo.getTotalFiles(),
+                            (int) (progressInfo.getProgress() * 100),
+                            progressInfo.getCurrentFile(),
+                            etaString
+                        );
+
+                        progressLabel.setText(progressText);
                     });
                 });
             }
         };
 
-        conversionTask.setOnSucceeded(event -> {
-            ImageConverterServiceV2.ConversionResult result = conversionTask.getValue();
+        currentTask.setOnSucceeded(event -> {
+            ImageConverterServiceV2.ConversionResult result = currentTask.getValue();
 
             progressBar.setProgress(1.0);
             progressLabel.setText("Завершено!");
@@ -129,10 +149,13 @@ public class MainController {
 
             convertButton.setDisable(false);
             browseButton.setDisable(false);
+            cancelButton.setDisable(true);
+            cancelButton.setVisible(false);
+            cancelButton.setManaged(false);
         });
 
-        conversionTask.setOnFailed(event -> {
-            Throwable exception = conversionTask.getException();
+        currentTask.setOnFailed(event -> {
+            Throwable exception = currentTask.getException();
 
             progressBar.setProgress(0);
             progressLabel.setText("");
@@ -145,11 +168,56 @@ public class MainController {
 
             convertButton.setDisable(false);
             browseButton.setDisable(false);
+            cancelButton.setDisable(true);
+            cancelButton.setVisible(false);
+            cancelButton.setManaged(false);
         });
 
-        Thread thread = new Thread(conversionTask);
+        currentTask.setOnCancelled(event -> {
+            progressBar.setProgress(0);
+            progressLabel.setText("Отменено");
+
+            statusLabel.setText("Конвертация была отменена пользователем.");
+            statusLabel.setStyle("-fx-background-color: #fff3cd; -fx-text-fill: #856404;");
+
+            convertButton.setDisable(false);
+            browseButton.setDisable(false);
+            cancelButton.setDisable(true);
+            cancelButton.setVisible(false);
+            cancelButton.setManaged(false);
+        });
+
+        Thread thread = new Thread(currentTask);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    @FXML
+    private void handleCancel() {
+        if (currentTask != null && currentTask.isRunning()) {
+            converterService.cancel();
+            currentTask.cancel();
+        }
+    }
+
+    private String formatETA(long etaMillis) {
+        if (etaMillis <= 0) {
+            return "расчет...";
+        }
+
+        long seconds = etaMillis / 1000;
+
+        if (seconds < 60) {
+            return seconds + " сек";
+        } else if (seconds < 3600) {
+            long minutes = seconds / 60;
+            long remainingSeconds = seconds % 60;
+            return String.format("%d мин %d сек", minutes, remainingSeconds);
+        } else {
+            long hours = seconds / 3600;
+            long minutes = (seconds % 3600) / 60;
+            return String.format("%d ч %d мин", hours, minutes);
+        }
     }
 
     private void showErrorDialog(java.util.List<String> errors) {
