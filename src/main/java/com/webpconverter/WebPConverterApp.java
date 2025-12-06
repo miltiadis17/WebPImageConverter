@@ -14,10 +14,10 @@ public class WebPConverterApp extends Application {
         Parent root = loader.load();
 
         primaryStage.setTitle("WebP Image Converter");
-        primaryStage.setScene(new Scene(root, 700, 550));
+        primaryStage.setScene(new Scene(root, 700, 650));
         primaryStage.setResizable(true);
         primaryStage.setMinWidth(700);
-        primaryStage.setMinHeight(550);
+        primaryStage.setMinHeight(650);
         primaryStage.show();
     }
 
