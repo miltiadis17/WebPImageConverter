@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.webpconverter.MainController"
+      spacing="20"
+      style="-fx-background-color: #f5f5f5;">
+
+    <padding>
+        <Insets top="30" right="40" bottom="30" left="40"/>
+    </padding>
+
+    <!-- Title -->
+    <Label text="WebP Image Converter" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+        <padding>
+            <Insets bottom="10"/>
+        </padding>
+    </Label>
+
+    <!-- Input Directory Selection -->
+    <VBox spacing="10">
+        <Label text="Выберите папку с изображениями:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <TextField fx:id="inputPathField" promptText="Путь к папке..." HBox.hgrow="ALWAYS"
+                       style="-fx-font-size: 13px;" editable="false"/>
+            <Button fx:id="browseButton" text="Обзор..." onAction="#handleBrowse"
+                    style="-fx-font-size: 13px; -fx-background-color: #3498db; -fx-text-fill: white;"
+                    prefWidth="100"/>
+        </HBox>
+    </VBox>
+
+    <!-- Options -->
+    <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 5; -fx-border-color: #ddd; -fx-border-radius: 5;">
+        <padding>
+            <Insets top="15" right="15" bottom="15" left="15"/>
+        </padding>
+
+        <Label text="Настройки конвертации:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+
+        <!-- Recursive Option -->
+        <CheckBox fx:id="recursiveCheckBox" text="Обрабатывать вложенные папки (рекурсивно)"
+                  style="-fx-font-size: 13px;"/>
+
+        <!-- Quality Slider -->
+        <VBox spacing="5">
+            <Label text="Качество сжатия:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Slider fx:id="qualitySlider" min="1" max="100" value="85" showTickLabels="false"
+                        showTickMarks="true" majorTickUnit="25" minorTickCount="5" HBox.hgrow="ALWAYS"
+                        blockIncrement="1"/>
+                <Label fx:id="qualityLabel" text="85" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-min-width: 35px;"/>
+            </HBox>
+            <Label text="(1 = минимальное, 100 = максимальное)" style="-fx-font-size: 11px; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+    </VBox>
+
+    <!-- Convert Button -->
+    <Button fx:id="convertButton" text="Конвертировать" onAction="#handleConvert"
+            style="-fx-font-size: 16px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;"
+            prefWidth="200" prefHeight="45" disable="true">
+        <VBox.margin>
+            <Insets top="10"/>
+        </VBox.margin>
+    </Button>
+
+    <!-- Progress Bar -->
+    <VBox spacing="8" fx:id="progressBox" visible="false" managed="false">
+        <Label text="Прогресс конвертации:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+        <ProgressBar fx:id="progressBar" prefWidth="Infinity" prefHeight="25"/>
+        <Label fx:id="progressLabel" text="" style="-fx-font-size: 12px; -fx-text-fill: #555;"/>
+        <VBox.margin>
+            <Insets bottom="5"/>
+        </VBox.margin>
+    </VBox>
+
+    <!-- Status Label -->
+    <Label fx:id="statusLabel" text="" wrapText="true"
+           style="-fx-font-size: 13px; -fx-padding: 10; -fx-background-radius: 5;"
+           minHeight="80" maxHeight="150"/>
+
+</VBox>
